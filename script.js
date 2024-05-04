@@ -1,52 +1,86 @@
-let expense = [];
+let expenseItems = localStorage.getItem('user-expenses')
+  ? JSON.parse(localStorage.getItem('user-expenses'))
+  : [];
 
-const expenseDetails = document.querySelector('form');
-const amount = document.querySelector('#amount');
-const description = document.querySelector('#description');
-const category = document.querySelector('#category');
+window.onload = () => {
+  displayItems(expenseItems);
+};
 
-expenseDetails.addEventListener('submit', (e) => {
+const form = document.querySelector('form');
+const ul = document.querySelector('ul');
+let editingIndex = -1;
+
+form.addEventListener('submit', handleFormSubmit);
+
+function handleFormSubmit(e) {
   e.preventDefault();
-  const list = document.querySelector('ul');
-  const li = document.createElement('li');
-  const span = document.createElement('span');
-  const deleteBtn = document.createElement('button');
-  const editBtn = document.createElement('button');
 
-  deleteBtn.id = 'delete';
-  editBtn.id = 'edit';
+  const amount = document.querySelector('#amount').value;
+  const description = document.querySelector('#description').value;
+  const category = document.querySelector('#category').value;
 
-  if (amount.value == '' || description.value == '') return;
+  if (amount == '' || description == '') return;
 
-  const userExpenses = {
-    amount: amount.value,
-    description: description.value,
-    category: category.value,
-  };
+  if (editingIndex !== -1) {
+    expenseItems[editingIndex] = { amount, description, category };
+    editingIndex = -1;
+  } else {
+    expenseItems.push({
+      amount,
+      description,
+      category,
+    });
+  }
 
-  expense.push(userExpenses);
+  localStorage.setItem('user-expenses', JSON.stringify(expenseItems));
 
-  localStorage.setItem('user expenses', JSON.stringify(expense));
+  form.reset();
 
-  deleteBtn.innerText = 'Delete';
-  editBtn.innerText = 'Edit';
+  displayItems(expenseItems);
+}
 
-  const users = localStorage.getItem('user expenses');
-  console.log(users);
+function displayItems(items) {
+  if (!items.length) return;
+  ul.innerHTML = '';
+  items.forEach((item, index) => {
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    const deletebtn = document.createElement('button');
+    editbtn = document.createElement('button');
 
-  JSON.parse(users).forEach((user) => {
-    span.innerText = `${user.amount} ${user.description} ${user.category}`;
+    deletebtn.id = 'delete';
+    editbtn.id = 'edit';
+
+    span.innerText = `${item.amount}-${item.description}-${item.category}`;
+    deletebtn.innerText = 'Delete';
+    editbtn.innerText = 'Edit';
+
+    deletebtn.addEventListener('click', () => deleteItem(index));
+    editbtn.addEventListener('click', () => editItem(index));
+
     li.append(span);
-    li.append(deleteBtn);
-    li.append(editBtn);
-    list.append(li);
-  });
+    li.append(deletebtn);
+    li.append(editbtn);
 
-  deleteBtn.addEventListener('click', (e) => {
-    list.removeChild(li);
-    console.log();
+    ul.append(li);
   });
+}
 
-  amount.value = '';
-  description.value = '';
-});
+function deleteItem(index) {
+  expenseItems.splice(index, 1);
+  localStorage.setItem('user-expenses', JSON.stringify(expenseItems));
+  if (!expenseItems.length) location.reload();
+  displayItems(expenseItems);
+}
+
+function editItem(index) {
+  let editAmount = document.querySelector('#amount');
+  let editDescription = document.querySelector('#description');
+  let editCategory = document.querySelector('#category');
+
+  editAmount.value = expenseItems[index].amount;
+  editDescription.value = expenseItems[index].description;
+  editCategory.value = expenseItems[index].category;
+
+  editingIndex = index;
+}

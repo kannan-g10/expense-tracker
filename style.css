@@ -9,8 +9,22 @@ body {
   margin-top: 30px;
 }
 
-/* editBtn.addEventListener('click', (e) => {
-  const desc = li.firstElementChild;
-  description.value = desc.innerText.split('-')[1];
-  desc.innerText.split('-')[1] = description.value;
-}); */
+ul {
+  padding: 10px;
+}
+
+span {
+  font-size: x-large;
+  margin: 15px;
+  color: rgb(19, 14, 14);
+}
+
+#delete,
+#edit {
+  width: 100px;
+  padding: 5px;
+  margin: 15px;
+  border-radius: 5px;
+  background-color: #333333;
+  color: whitesmoke;
+}
