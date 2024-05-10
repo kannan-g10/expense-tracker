@@ -14,6 +14,8 @@ ul {
 }
 
 span {
+  display: inline-block;
+  width: 300px;
   font-size: x-large;
   margin: 15px;
   color: rgb(19, 14, 14);
