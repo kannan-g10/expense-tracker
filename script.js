@@ -46,7 +46,7 @@ function displayItems(items) {
     const li = document.createElement('li');
     const span = document.createElement('span');
     const deletebtn = document.createElement('button');
-    editbtn = document.createElement('button');
+    const editbtn = document.createElement('button');
 
     deletebtn.id = 'delete';
     editbtn.id = 'edit';
